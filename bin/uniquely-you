@@ -1,0 +1,9 @@
+#!/usr/bin/env ruby
+
+require 'pry'
+
+require './lib/uniquely_you'
+
+CLI.new.call
+
+binding.pry

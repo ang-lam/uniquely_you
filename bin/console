@@ -1,8 +1,18 @@
 #!/usr/bin/env ruby
-# frozen_string_literal: true
+# acts as our environment
+require 'pry'
+require "httparty"
+require "json"
+# require "dotenv"
 
+# bring in the models
 require "bundler/setup"
-require "uniquely_you"
+require_relative "../lib/uniquely_you"
+
+#relative?
+# require_relative '../lib/api'
+# require_relative '../lib/cli'
+# require_relative '../lib/tags'
 
 # You can add fixtures and/or initialization code here to make experimenting
 # with your gem easier. You can also use a different console, if you like.
