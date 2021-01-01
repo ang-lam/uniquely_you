@@ -2,7 +2,7 @@ require 'pry'
 class Tags
     #attr_accessor for the attributes name, price, availability 
     
-    TAGS = %W(Alcohol\ Free CertClean Chemical\ Free Cruelty\ Free Dairy\ Free EWG\ Verified EcoCert Fair\ Trade Gluten\ Free Hypoallergenic Natural Non-GMO Oil\ Free Organic Peanut\ Free\ Product Silicone\ Free Sugar\ Free USDA\ Organic Vegan Water\ Free)
+    TAGS = %W(Alcohol\ Free Chemical\ Free Cruelty\ Free Hypoallergenic Oil\ Free Organic Peanut\ Free\ Product Silicone\ Free Sugar\ Free Vegan)
     #call .all and get an array of the tags
     def self.list
         # puts <<-DOC.gsub /^\s*/, ''
@@ -17,5 +17,7 @@ class Tags
         TAGS.each_with_index do |list_item, i|
             puts "#{i + 1}. #{list_item}"
         end
+        # puts "11. Search by product type"
     end
+    # binding.pry
 end
