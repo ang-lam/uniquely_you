@@ -1,28 +1,39 @@
 # CLI CONTROLLER
-require 'pry'
+
 class CLI
+    attr_accessor :api, :bag
 
-    attr_accessor :api, :tags
-
-    @@all = []
+    @@grn="\e[1;32m"
+    @@white="\e[0m"
+    @@ublue="\e[4;34m"
+    @@pur="\e[1;35m"
+    @@whiteback="\e[47m"
+    @@bwhite="\e[1;37m"
+    
+    TAGS = %W(Alcohol\ Free Chemical\ Free Cruelty\ Free Hypoallergenic Oil\ Free Organic Peanut\ Free\ Product Silicone\ Free Sugar\ Free Vegan)
 
     def call
+        puts "
+        ▒█░▒█ █▀▀▄ ░▀░ █▀▀█ █░░█ █▀▀ █░░ █░░█ 　 ▒█░░▒█ █▀▀█ █░░█ 
+        ▒█░▒█ █░░█ ▀█▀ █░░█ █░░█ █▀▀ █░░ █▄▄█ 　 ▒█▄▄▄█ █░░█ █░░█ 
+        ░▀▄▄▀ ▀░░▀ ▀▀▀ ▀▀▀█ ░▀▀▀ ▀▀▀ ▀▀▀ ▄▄▄█ 　 ░░▒█░░ ▀▀▀▀ ░▀▀▀
+        "
         list_tags
         menu
         goodbye
     end
 
-    def self.all
-        @@all
-    end
-
-    def save_item
-        self.class.all << self
+    def save_item(tag, product_type, input)
+        links = Bag.add_item(tag, product_type)
+        adjusted_input = input.to_i - 1
+        Bag.all << links[adjusted_input]
     end
 
     def list_tags
-        puts "Select a tag to browse by entering the number corresponding with the tag or type exit to close application:"
-        @tags = Tags.list
+        puts "\n#{@@grn}Select a tag to browse by entering the number corresponding with the tag or type exit to close application:#{@@white}\n\n"
+        TAGS.each_with_index do |list_item, i|
+            puts "#{i + 1}. #{list_item}"
+        end
     end
 
     def menu
@@ -30,14 +41,21 @@ class CLI
         while input != "exit"
             # gets.strip => takes user input from the console
             input = gets.strip.downcase
+            system("clear")
             case input
             when "1"
                 list("alcohol%20free")
                 while input != "back"
                     input = gets.strip.downcase
+                    system("clear")
                     case input
                     when "1"
                         products("alcohol%20free", "foundation")
+                        while input != "back"
+                            input = gets.strip
+                            system("clear")   
+                            save_item("alcohol%20free", "foundation", input)
+                        end
                     else
                         puts "Select a number or type back to go back to main menu"
                     end
@@ -47,6 +65,7 @@ class CLI
                 list("chemical%20free")
                 while input != "back"
                     input = gets.strip.downcase
+                    system("clear")
                     case input
                     when "1"
                         products("chemical%20free", "lipstick")
@@ -59,6 +78,7 @@ class CLI
                 list_with_lipliner("cruelty%20free", 1)
                 while input != "back"
                     input = gets.strip.downcase
+                    system("clear")
                     case input
                     when "1"
                         products("cruelty%20free", "foundation")
@@ -75,6 +95,7 @@ class CLI
                 list_with_lipliner("hypoallergenic", 4)
                 while input != "back"
                     input = gets.strip.downcase
+                    system("clear")
                     case input
                     when "1"
                         products("hypoallergenic", "blush")
@@ -99,6 +120,7 @@ class CLI
                 list("oil%20free")
                 while input != "back"
                     input = gets.strip.downcase
+                    system("clear")
                     case input
                     when "1"
                         products("oil%20free", "foundation")
@@ -111,6 +133,7 @@ class CLI
                 list("organic")
                 while input != "back"
                     input = gets.strip.downcase
+                    system("clear")
                     case input
                     when "1"
                         products("organic", "blush")
@@ -133,6 +156,7 @@ class CLI
                 list("peanut%20free%20product")
                 while input != "back"
                     input = gets.strip.downcase
+                    system("clear")
                     case input
                     when "1"
                         products("peanut%20free%20product", "lipstick")
@@ -145,6 +169,7 @@ class CLI
                 list("silicone%20free")
                 while input != "back"
                     input = gets.strip.downcase
+                    system("clear")
                     case input
                     when "1"
                         products("silicone%20free", "foundation")
@@ -157,6 +182,7 @@ class CLI
                 list_with_nailpolish("sugar%20free")
                 while input != "back"
                     input = gets.strip.downcase
+                    system("clear")
                     case input
                     when "1"
                         products("sugar%20free", "nail_polish")
@@ -169,6 +195,7 @@ class CLI
                 list_with_lipliner_nailpolish("vegan", 5, 8)
                 while input != "back"
                     input = gets.strip.downcase
+                    system("clear")
                     case input
                     when "1"
                         products("vegan", "blush")
@@ -193,13 +220,6 @@ class CLI
                     end
                 end
                 list_tags
-            # when "11"
-            #     products = Api.search_endpoint("https://makeup-api.herokuapp.com/api/v1/products.json")
-            #     random_product = products.sample
-            #     puts "\n#{random_product["name"]} by #{random_product["brand"].capitalize}\n\n#{random_product["description"]}\n\nTags: #{random_product["tag_list"].join(", ")}\n\nLink: #{random_product["product_link"]}\n\n\n"
-            #     # items.each_with_index do |item, i|
-            #     #     puts "\n#{i + 1}. #{item["name"]} by #{item["brand"].capitalize}\n\n#{item["description"]}\n\nTags: #{item["tag_list"].join(", ")}\n\nLink: #{item["product_link"]}\n\n\n"
-            #     # end
             when "list"
                 list_tags
             else
@@ -256,18 +276,14 @@ class CLI
     def products(tag, product_type)
         search = Api.search_endpoint(tag)
         items = search.select {|item| item["product_type"] == "#{product_type}"}
-        star = "*" * 40
+        star = "*" * 50
         items.each_with_index do |item, i|
-            puts "\n#{star}\n\n#{i + 1}. #{item["name"]} by #{item["brand"].capitalize}\n\n#{item["description"]}\n\nTags: #{item["tag_list"].join(", ")}\n\nLink: #{item["product_link"]}\n\n\n"
-        end
-        #enter item # to save to bag
-        #items input - 1 (to account for index number)
-        
+            puts "\n#{@@bwhite}#{star}#{@@white}\n\n\n#{i + 1}. #{@@pur}#{item["name"]} by #{item["brand"].capitalize}\n\n#{@@white}#{item["description"]}\n\nTags: #{item["tag_list"].join(", ")}\n\nLink: #{@@ublue}#{item["product_link"]}#{@@white}\n\n\n"
+        end    
+        puts "Type back to go back to main menu."
     end
 
     def goodbye
-        puts "Always found uniquely for you!"
+        puts "#{@@grn}𝑨𝒍𝒘𝒂𝒚𝒔 𝒇𝒐𝒖𝒏𝒅 𝒖𝒏𝒊𝒒𝒖𝒆𝒍𝒚 𝒇𝒐𝒓 𝒚𝒐𝒖#{@@white}"
     end
-
-
 end
