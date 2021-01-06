@@ -1,8 +1,13 @@
 
 class Bag
 
-    attr_reader :name
+    attr_reader :name, :cli
+    
     @@all = []
+    
+    @@grn="\e[1;32m"
+    @@white="\e[0m"
+    @@ublue="\e[4;34m"
 
     def initialize(name = "favorites")
         @name = name
@@ -12,21 +17,51 @@ class Bag
         @@all
     end
 
-    def item_count
-        @items.count
+    def self.item_count
+        self.all.count
+    end
+
+    def self.view_bag
+        if item_count > 0
+            puts "#{@@grn}Your bag has #{item_count} item(s).#{@@white}\n\n"
+            self.all.each_with_index do |list_item, i|
+                puts "#{i + 1}. #{@@ublue}#{list_item}#{@@white}"
+            end
+            puts "\n\n#{@@grn}Enter corresponding number of item you wish to remove from your bag.\n\nType clear to empty your bag.\n\nType menu to return to main menu.#{@@white}"
+        else
+            puts "#{@@grn}There are no items in your bag. Type menu to go back to main menu.#{@@white}"
+        end
+    end
+
+    def self.empty
+        self.all.clear
+        self.view_bag
+    end
+
+    # def self.remove_or_empty(input)
+    #     # input = gets.strip
+    #     if input != "clear"
+    #         adjusted_input = input.to_i - 1
+    #         self.all.delete_at(adjusted_input)
+    #         self.view_bag
+    #     elsif input == "clear"
+    #         self.empty
+    #         self.view_bag
+    #     end
+    # end
+
+    def self.remove(input)
+        adjusted_input = input.to_i - 1
+        self.all.delete_at(adjusted_input)
+        self.view_bag
     end
 
     def self.add_item(tag, product_type)
         search = Api.search_endpoint(tag)
         items = search.select {|item| item["product_type"] == "#{product_type}"}
-        # links = []
         items.collect do |item|
             item["product_link"]
         end
-
-
-        # adjusted_input = input - 1
-        # @items < items[adjusted_input
     end
 
 end
