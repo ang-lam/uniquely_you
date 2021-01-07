@@ -16,7 +16,7 @@ class Bag
     def self.all
         @@all
     end
-
+    
     def self.item_count
         self.all.count
     end
@@ -52,7 +52,10 @@ class Bag
 
     def self.remove(input)
         adjusted_input = input.to_i - 1
-        self.all.delete_at(adjusted_input)
+        if adjusted_input != -1
+            self.all.delete_at(adjusted_input)
+            self.view_bag
+        end
         self.view_bag
     end
 

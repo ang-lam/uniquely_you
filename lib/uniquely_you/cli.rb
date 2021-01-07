@@ -68,6 +68,7 @@ class CLI
             else
                 puts "Not sure what you want? Type menu for the tags or exit to close application."
             end
+            binding.pry
         end
     end
 
@@ -90,7 +91,7 @@ class CLI
     def sub_menu(tag, product1=nil, product2=nil, product3=nil, product4=nil, product5=nil, product6=nil, product7=nil, product8=nil, product9=nil)
         list(tag)
         input = nil
-        while input != "back"
+        while input != "menu"
             input = gets.strip.downcase
             system("clear")
             case input
@@ -120,12 +121,20 @@ class CLI
     end
 
     def item_menu(tag, product_type)
-        products(tag, product_type)
-        input = gets.strip
-        if input != "back"
+        item = products(tag, product_type)
+        input = gets.strip.to_i
+        if input <= item.count && input > 0
             save_item(tag, product_type, input)
+        else
+        # elsif input == 0
+            puts "Invalid input... Please enter a number to save or type menu to return to main menu."
+            sleep (3)
+            item_menu(tag, product_type)
         end
         call
+        # if input != "menu"
+        #     save_item(tag, product_type, input)
+        # end
     end
 
     def save_item(tag, product_type, input)
@@ -163,9 +172,10 @@ class CLI
         items = search.select {|item| item["product_type"] == "#{product_type}"}
         star = "*" * 50
         items.each_with_index do |item, i|
-            puts "\n#{@@bwhite}#{star}#{@@white}\n\n\n#{i + 1}. #{@@pur}#{item["name"]} by #{item["brand"].capitalize}\n\n#{@@white}#{item["description"]}\n\nTags: #{item["tag_list"].join(", ")}\n\nLink: #{@@ublue}#{item["product_link"]}#{@@white}\n\n\n"
+            puts "\n#{@@bwhite}#{star}#{@@white}\n\n\n#{i + 1}. #{@@pur}#{item["name"]} by #{item["brand"]}\n\n#{@@white}#{item["description"]}\n\nTags: #{item["tag_list"].join(", ")}\n\nLink: #{@@ublue}#{item["product_link"]}#{@@white}\n\n\n"
         end    
         puts "#{@@grn}Type number corresponding to item you wish to add to your bag or type back to return to main menu.#{@@white}"
+        items
     end
 
     def goodbye

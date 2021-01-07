@@ -1,1 +1,0 @@
-tag > brand > makeup product > name > hyperlink
