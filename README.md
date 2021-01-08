@@ -1,33 +1,26 @@
 # UniquelyYou
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/uniquely_you`. To experiment with that code, run `bin/console` for an interactive prompt.
+Phase 1 Flatiron project.
+
+Welcome to Uniquely You CLI! Uniquely You strives to provide you a method to browse makeup products that fit to your unique needs. The CLI allows you to browse by a specifc tag, such as vegan, cruelty free, alcohol free, silicone free and more. Each tag gives you product types you can browse to futher narrow your search for the product that meets your needs. After browsing some products, you can select prodcuts to save to your bag. The bag will have a list of links for all of the favorited products to direct you to the product's website to purchase!
 
 
 ## Installation
 
-Add this line to your application's Gemfile:
+Execute:
 
-```ruby
-gem 'uniquely_you'
-```
+    bundle install
 
-And then execute:
-
-    $ bundle install
-
-Or install it yourself as:
-
-    $ gem install uniquely_you
 
 ## Usage
 
-TODO: Write usage instructions here
+Start the CLI in terminal by system command: `bin/uniquely-you`
 
-## Development
+Follow prompts in CLI: enter the numbers corresponding to the tags and product types you wish to browse. 
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+When browsing the items, you can enter the number corresponding to the item to add to your favorites. 
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and the created tag, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+At main menu, enter bag to view your favorited items.
 
 ## Contributing
 

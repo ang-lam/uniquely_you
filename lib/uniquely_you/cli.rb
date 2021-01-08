@@ -25,18 +25,16 @@ class CLI
     end
 
     def list_tags
-        puts "\n#{@@grn}Select a tag to browse by entering the number corresponding with the tag or type exit to close application.\n\nType bag to view your favorited items.#{@@white}\n\n"
+        puts "\n#{@@grn}Select a tag to browse by entering the number corresponding with the tag or type 'exit' to close application.\n\nType 'bag' to view your favorited items.#{@@white}\n\n"
         TAGS.each_with_index do |list_item, i|
             puts "#{i + 1}. #{list_item}"
         end
     end
 
     def menu
-        input = nil
-        while input != "exit"
-            # gets.strip => takes user input from the console
-            input = gets.strip.downcase
-            system("clear")
+        input = gets.strip.downcase
+        system("clear")
+        if input.to_i <= 10 && input.to_i > 0
             case input
             when "1"
                 sub_menu("alcohol%20free", "foundation")
@@ -58,17 +56,14 @@ class CLI
                 sub_menu("sugar%20free", "nail_polish")
             when "10"
                 sub_menu("vegan", "blush", "bronzer", "eyeliner", "eyeshadow", "foundation", "lip_liner", "lipstick", "mascara", "nail_polish")
-            when "bag"
-                Bag.view_bag
-                modify_bag
-            when "menu"
-                call
-            when "exit"
-                goodbye
-            else
-                puts "Not sure what you want? Type menu for the tags or exit to close application."
             end
-            binding.pry
+        elsif input == "bag"
+            Bag.view_bag
+            modify_bag
+        elsif input == "exit"
+            goodbye
+        else
+            call
         end
     end
 
@@ -89,11 +84,10 @@ class CLI
     end
 
     def sub_menu(tag, product1=nil, product2=nil, product3=nil, product4=nil, product5=nil, product6=nil, product7=nil, product8=nil, product9=nil)
-        list(tag)
-        input = nil
-        while input != "menu"
-            input = gets.strip.downcase
-            system("clear")
+        list = list(tag)
+        input = gets.strip.downcase
+        system("clear")
+        if input.to_i <= list.count && input.to_i > 0
             case input
             when "1"
                 item_menu(tag, product1)
@@ -113,28 +107,25 @@ class CLI
                 item_menu(tag, product8)
             when "9"
                 item_menu(tag, product9)
-            else
-                puts "Select a number or type back to go back to main menu"
             end
+        elsif input == "menu"
+            test_return
+        else
+            sub_menu(tag, product1, product2, product3, product4, product5, product6, product7, product8, product9)
         end
-        call
     end
 
     def item_menu(tag, product_type)
         item = products(tag, product_type)
-        input = gets.strip.to_i
-        if input <= item.count && input > 0
+        input = gets.strip
+        system("clear")
+        if input.to_i <= item.count && input.to_i > 0
             save_item(tag, product_type, input)
-        else
-        # elsif input == 0
-            puts "Invalid input... Please enter a number to save or type menu to return to main menu."
-            sleep (3)
-            item_menu(tag, product_type)
+            call
+        elsif input == "menu"
+            call
+        else item_menu(tag, product_type)
         end
-        call
-        # if input != "menu"
-        #     save_item(tag, product_type, input)
-        # end
     end
 
     def save_item(tag, product_type, input)
@@ -146,17 +137,12 @@ class CLI
         sleep(3)
     end
 
-    def product_type_prompt
-        puts ""
-        puts "#{@@grn}Enter number corresponding with product type you want to browse or type back to return to main menu.#{@@white}\n\n"
-    end
-
     def list(tag)
         search = Api.search_endpoint(tag)
         product_types = search.collect {|item| item["product_type"]}
         list = product_types.uniq
         list.sort!
-        product_type_prompt
+        puts "\n#{@@grn}Enter number corresponding with product type you want to browse or type 'menu' to return to main menu.#{@@white}\n\n"
         list.each_with_index do |list_item, i| 
             if list_item == "lip_liner"
                 list_item = "lip liner"
@@ -174,7 +160,7 @@ class CLI
         items.each_with_index do |item, i|
             puts "\n#{@@bwhite}#{star}#{@@white}\n\n\n#{i + 1}. #{@@pur}#{item["name"]} by #{item["brand"]}\n\n#{@@white}#{item["description"]}\n\nTags: #{item["tag_list"].join(", ")}\n\nLink: #{@@ublue}#{item["product_link"]}#{@@white}\n\n\n"
         end    
-        puts "#{@@grn}Type number corresponding to item you wish to add to your bag or type back to return to main menu.#{@@white}"
+        puts "#{@@grn}Enter number corresponding to item you wish to add to your bag or type 'menu' to return to main menu.#{@@white}"
         items
     end
 

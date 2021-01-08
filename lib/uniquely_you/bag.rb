@@ -1,4 +1,3 @@
-
 class Bag
 
     attr_reader :name, :cli
@@ -27,9 +26,9 @@ class Bag
             self.all.each_with_index do |list_item, i|
                 puts "#{i + 1}. #{@@ublue}#{list_item}#{@@white}"
             end
-            puts "\n\n#{@@grn}Enter corresponding number of item you wish to remove from your bag.\n\nType clear to empty your bag.\n\nType menu to return to main menu.#{@@white}"
+            puts "\n\n#{@@grn}Enter corresponding number of item you wish to remove from your bag.\n\nType 'clear' to empty your bag.\n\nType 'menu' to return to main menu.#{@@white}"
         else
-            puts "#{@@grn}There are no items in your bag. Type menu to go back to main menu.#{@@white}"
+            puts "#{@@grn}There are no items in your bag. Type 'menu' to go back to main menu.#{@@white}"
         end
     end
 
@@ -38,24 +37,13 @@ class Bag
         self.view_bag
     end
 
-    # def self.remove_or_empty(input)
-    #     # input = gets.strip
-    #     if input != "clear"
-    #         adjusted_input = input.to_i - 1
-    #         self.all.delete_at(adjusted_input)
-    #         self.view_bag
-    #     elsif input == "clear"
-    #         self.empty
-    #         self.view_bag
-    #     end
-    # end
-
     def self.remove(input)
         adjusted_input = input.to_i - 1
         if adjusted_input != -1
             self.all.delete_at(adjusted_input)
             self.view_bag
         end
+        system("clear") # DETELE?????
         self.view_bag
     end
 
@@ -66,5 +54,4 @@ class Bag
             item["product_link"]
         end
     end
-
 end

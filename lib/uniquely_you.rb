@@ -6,4 +6,6 @@ require_relative './uniquely_you/bag'
 
 require 'pry'
 require 'httparty'
+require 'word_wrap/core_ext'
+require 'word_wrap'
 
