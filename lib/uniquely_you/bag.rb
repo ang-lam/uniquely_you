@@ -39,11 +39,12 @@ class Bag
 
     def self.remove(input)
         adjusted_input = input.to_i - 1
-        if adjusted_input != -1
+        int_input = Integer(input) rescue false
+        if adjusted_input != -1 && int_input
             self.all.delete_at(adjusted_input)
             self.view_bag
         end
-        system("clear") # DETELE?????
+        system("clear")
         self.view_bag
     end
 

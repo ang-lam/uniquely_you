@@ -33,27 +33,31 @@ class CLI
 
     def menu
         input = gets.strip.downcase
+        int_input = Integer(input) rescue false
         system("clear")
-        if input == "1"
-            sub_menu("alcohol%20free", "foundation")
-        elsif input == "2"
-            sub_menu("chemical%20free", "lipstick")
-        elsif input == "3"
-            sub_menu("cruelty%20free", "foundation", "lip_liner", "lipstick")
-        elsif input == "4"
-            sub_menu("hypoallergenic", "blush", "eyeliner", "eyeshadow", "foundation", "lip_liner", "lipstick", "mascara")
-        elsif input == "5"
-            sub_menu("oil%20free", "foundation")
-        elsif input == "6"
-            sub_menu("organic", "blush", "bronzer", "eyeliner", "eyeshadow", "lipstick", "mascara")
-        elsif input == "7"
-            sub_menu("peanut%20free%20product", "lipstick")
-        elsif input == "8"
-            sub_menu("silicone%20free", "foundation")
-        elsif input == "9"
-            sub_menu("sugar%20free", "nail_polish")
-        elsif input == "10"
+        if int_input && input.to_i <= 10 && input.to_i > 0
+            case input
+            when "1"
+                sub_menu("alcohol%20free", "foundation")
+            when "2"
+                sub_menu("chemical%20free", "lipstick")
+            when "3"
+                sub_menu("cruelty%20free", "foundation", "lip_liner", "lipstick")
+            when "4"
+                sub_menu("hypoallergenic", "blush", "eyeliner", "eyeshadow", "foundation", "lip_liner", "lipstick", "mascara")
+            when "5"
+                sub_menu("oil%20free", "foundation")
+            when "6"
+                sub_menu("organic", "blush", "bronzer", "eyeliner", "eyeshadow", "lipstick", "mascara")
+            when "7"
+                sub_menu("peanut%20free%20product", "lipstick")
+            when "8"
+                sub_menu("silicone%20free", "foundation")
+            when "9"
+                sub_menu("sugar%20free", "nail_polish")
+            when "10"
             sub_menu("vegan", "blush", "bronzer", "eyeliner", "eyeshadow", "foundation", "lip_liner", "lipstick", "mascara", "nail_polish")
+            end
         elsif input == "bag"
             Bag.view_bag
             modify_bag
@@ -64,44 +68,32 @@ class CLI
         end
     end
 
-    def modify_bag
-        input = nil
-        while input != "menu"
-            input = gets.strip
-            system("clear")
-            case input
-            when "menu"
-                call
-            when "clear"
-                Bag.empty
-            else
-                Bag.remove(input)
-            end
-        end
-    end
-
     def sub_menu(tag, product1=nil, product2=nil, product3=nil, product4=nil, product5=nil, product6=nil, product7=nil, product8=nil, product9=nil)
         list = list(tag)
         input = gets.strip.downcase
+        int_input = Integer(input) rescue false
         system("clear")
-        if input == "1"
-            item_menu(tag, product1)
-        elsif input =="2"
-            item_menu(tag, product2)
-        elsif input == "3"
-            item_menu(tag, product3)
-        elsif input == "4"
-            item_menu(tag, product4)
-        elsif input == "5"
-            item_menu(tag, product5)
-        elsif input == "6"
-            item_menu(tag, product6)
-        elsif input == "7"
-            item_menu(tag, product7)
-        elsif input == "8"
-            item_menu(tag, product8)
-        elsif input == "9"
-            item_menu(tag, product9)
+        if int_input && input.to_i <= list.count && input.to_i > 0
+            case input
+            when "1"
+                item_menu(tag, product1)
+            when "2"
+                item_menu(tag, product2)
+            when "3"
+                item_menu(tag, product3)
+            when "4"
+                item_menu(tag, product4)
+            when "5"
+                item_menu(tag, product5)
+            when "6"
+                item_menu(tag, product6)
+            when "7"
+                item_menu(tag, product7)
+            when "8"
+                item_menu(tag, product8)
+            when "9"
+                item_menu(tag, product9)
+            end
         elsif input == "menu"
             call
         else
@@ -111,14 +103,33 @@ class CLI
 
     def item_menu(tag, product_type)
         item = products(tag, product_type)
-        input = gets.strip
+        input = gets.strip.downcase
+        int_input = Integer(input) rescue false
         system("clear")
-        if input.to_i <= item.count && input.to_i > 0
+        if int_input && input.to_i <= item.count && input.to_i > 0
             save_item(tag, product_type, input)
             call
         elsif input == "menu"
             call
         else item_menu(tag, product_type)
+        end
+    end
+
+    def modify_bag
+        input = nil
+        while input != "menu"
+            input = gets.strip
+            int_input = Integer(input) rescue false
+            system("clear")
+            if int_input && input.to_i <= Bag.item_count && input.to_i > 0
+                Bag.remove(input)
+            elsif input == "menu"
+                call
+            elsif input == "clear"
+                Bag.empty
+            else
+                Bag.remove(input)
+            end
         end
     end
 
@@ -156,6 +167,12 @@ class CLI
         end    
         puts "#{@@grn}Enter number corresponding to item you wish to add to your bag or type 'menu' to return to main menu.#{@@white}"
         items
+    end
+
+    def integer_input?
+        input = gets.strip.downcase
+        int_input = Integer(input) rescue false
+        system("clear")
     end
 
     def goodbye
