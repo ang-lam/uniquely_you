@@ -169,12 +169,6 @@ class CLI
         items
     end
 
-    def integer_input?
-        input = gets.strip.downcase
-        int_input = Integer(input) rescue false
-        system("clear")
-    end
-
     def goodbye
         puts "#{@@grn}𝑨𝒍𝒘𝒂𝒚𝒔 𝒇𝒐𝒖𝒏𝒅 𝒖𝒏𝒊𝒒𝒖𝒆𝒍𝒚 𝒇𝒐𝒓 𝒚𝒐𝒖#{@@white}"
     end

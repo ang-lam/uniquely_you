@@ -1,16 +1,10 @@
 class Bag
-
-    attr_reader :name, :cli
     
     @@all = []
     
     @@grn="\e[1;32m"
     @@white="\e[0m"
     @@ublue="\e[4;34m"
-
-    def initialize(name = "favorites")
-        @name = name
-    end
 
     def self.all
         @@all
