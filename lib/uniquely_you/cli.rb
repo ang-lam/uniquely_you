@@ -26,9 +26,7 @@ class CLI
 
     def list_tags
         puts "\n#{@@grn}Select a tag to browse by entering the number corresponding with the tag or type 'exit' to close application.\n\nType 'bag' to view your favorited items.#{@@white}\n\n"
-        TAGS.each_with_index do |list_item, i|
-            puts "#{i + 1}. #{list_item}"
-        end
+        TAGS.each_with_index {|list_item, i| puts "#{i + 1}. #{list_item}"}
     end
 
     def menu
@@ -162,9 +160,7 @@ class CLI
         search = Api.search_endpoint(tag)
         items = search.select {|item| item["product_type"] == "#{product_type}"}
         star = "*" * 100
-        items.each_with_index do |item, i|
-            puts "\n#{@@bwhite}#{star}#{@@white}\n\n\n#{i + 1}. #{@@pur}#{item["name"]} by #{item["brand"]}\n\n#{@@white}#{item["description"].wrap 100}\n\nTags: #{item["tag_list"].join(", ")}\n\nLink: #{@@ublue}#{item["product_link"]}#{@@white}\n\n\n"
-        end    
+        items.each_with_index {|item, i| puts "\n#{@@bwhite}#{star}#{@@white}\n\n\n#{i + 1}. #{@@pur}#{item["name"]} by #{item["brand"]}\n\n#{@@white}#{item["description"].wrap 100}\n\nTags: #{item["tag_list"].join(", ")}\n\nLink: #{@@ublue}#{item["product_link"]}#{@@white}\n\n\n"}  
         puts "#{@@grn}Enter number corresponding to item you wish to add to your bag or type 'menu' to return to main menu.#{@@white}"
         items
     end

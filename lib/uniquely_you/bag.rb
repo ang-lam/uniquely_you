@@ -1,5 +1,5 @@
 class Bag
-    
+
     @@all = []
     
     @@grn="\e[1;32m"
@@ -17,9 +17,7 @@ class Bag
     def self.view_bag
         if item_count > 0
             puts "#{@@grn}Your bag has #{item_count} item(s).#{@@white}\n\n"
-            self.all.each_with_index do |list_item, i|
-                puts "#{i + 1}. #{@@ublue}#{list_item}#{@@white}"
-            end
+            self.all.each_with_index {|list_item, i| puts "#{i + 1}. #{@@ublue}#{list_item}#{@@white}"}
             puts "\n\n#{@@grn}Enter corresponding number of item you wish to remove from your bag.\n\nType 'clear' to empty your bag.\n\nType 'menu' to return to main menu.#{@@white}"
         else
             puts "#{@@grn}There are no items in your bag. Type 'menu' to go back to main menu.#{@@white}"
@@ -45,8 +43,6 @@ class Bag
     def self.add_item(tag, product_type)
         search = Api.search_endpoint(tag)
         items = search.select {|item| item["product_type"] == "#{product_type}"}
-        items.collect do |item|
-            item["product_link"]
-        end
+        items.collect {|item| item["product_link"]}
     end
 end
