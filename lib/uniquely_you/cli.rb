@@ -126,7 +126,7 @@ class CLI
             elsif input == "clear"
                 Bag.empty
             else
-                Bag.remove(input)
+                Bag.view_bag
             end
         end
     end
