@@ -10,8 +10,7 @@ class Api
         search_url = URL + "?" + ENDPOINT + "=" + search_term
         self.call_api(search_url)
     end
-   
-    # private
+
     def self.call_api(url)
         HTTParty.get(url)
     end

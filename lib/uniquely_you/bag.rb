@@ -39,10 +39,4 @@ class Bag
         system("clear")
         self.view_bag
     end
-
-    def self.add_item(tag, product_type)
-        search = Api.search_endpoint(tag)
-        items = search.select {|item| item["product_type"] == "#{product_type}"}
-        items.collect {|item| item["product_link"]}
-    end
 end

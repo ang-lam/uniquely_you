@@ -1,12 +1,11 @@
 class CLI
-    attr_accessor :api, :bag
-
     @@grn="\e[1;32m"
     @@white="\e[0m"
     @@ublue="\e[4;34m"
     @@pur="\e[1;35m"
     @@whiteback="\e[47m"
     @@bwhite="\e[1;37m"
+    @@available_products_by_tag = ""
     
     TAGS = %W(Alcohol\ Free Chemical\ Free Cruelty\ Free Hypoallergenic Oil\ Free Organic Peanut\ Free\ Product Silicone\ Free Sugar\ Free Vegan)
 
@@ -66,51 +65,69 @@ class CLI
         end
     end
 
-    def sub_menu(tag, product1=nil, product2=nil, product3=nil, product4=nil, product5=nil, product6=nil, product7=nil, product8=nil, product9=nil)
-        list = list(tag)
+    def sub_menu(tag, type1=nil, type2=nil, type3=nil, type4=nil, type5=nil, type6=nil, type7=nil, type8=nil, type9=nil)
+        type_list = get_products_type_by_tag(tag)
         input = gets.strip.downcase
         int_input = Integer(input) rescue false
         system("clear")
-        if int_input && input.to_i <= list.count && input.to_i > 0
+        if int_input && input.to_i <= type_list.count && input.to_i > 0
             case input
             when "1"
-                item_menu(tag, product1)
+                product_type_menu(type1)
             when "2"
-                item_menu(tag, product2)
+                product_type_menu(type2)
             when "3"
-                item_menu(tag, product3)
+                product_type_menu(type3)
             when "4"
-                item_menu(tag, product4)
+                product_type_menu(type4)
             when "5"
-                item_menu(tag, product5)
+                product_type_menu(type5)
             when "6"
-                item_menu(tag, product6)
+                product_type_menu(type6)
             when "7"
-                item_menu(tag, product7)
+                product_type_menu(type7)
             when "8"
-                item_menu(tag, product8)
+                product_type_menu(type8)
             when "9"
-                item_menu(tag, product9)
+                product_type_menu(type9)
             end
         elsif input == "menu"
             call
         else
-            sub_menu(tag, product1, product2, product3, product4, product5, product6, product7, product8, product9)
+            sub_menu(tag, type1, type2, type3, type4, type5, type6, type7, type8, type9)
         end
     end
 
-    def item_menu(tag, product_type)
-        item = products(tag, product_type)
+    def product_type_menu(type)
+        product_list = get_products(type)
         input = gets.strip.downcase
         int_input = Integer(input) rescue false
         system("clear")
-        if int_input && input.to_i <= item.count && input.to_i > 0
-            save_item(tag, product_type, input)
+        if int_input && input.to_i <= product_list.count && input.to_i > 0
+            # save_item(tag, type, input)
+            save_item(input)
             call
         elsif input == "menu"
             call
-        else item_menu(tag, product_type)
+        else
+            product_type_menu(type)
         end
+    end
+
+    def get_products(type)
+        product_list = @@available_products_by_tag.get_products_by_type(type)
+        star = "*" * 100
+        product_list.each_with_index {|item, i| puts "\n#{@@bwhite}#{star}#{@@white}\n\n\n#{i + 1}. #{@@pur}#{item.name} by #{item.brand}\n\n#{@@white}#{item.description.wrap 100}\n\nTags: #{item.tags.join(", ")}\n\nLink: #{@@ublue}#{item.link}#{@@white}\n\n\n"}
+        puts "#{@@grn}Enter number corresponding to item you wish to add to your bag or type 'menu' to return to main menu.#{@@white}"
+        product_list
+    end
+
+    def save_item(input)
+        system("clear")
+        links = @@available_products_by_tag.get_product(input.to_i - 1)
+        Bag.all << links
+        puts "#{@@grn}Item has been saved to your favorites!\n\n\nReturning to main menu...#{@@white}"
+        sleep(3)  
     end
 
     def modify_bag
@@ -131,22 +148,13 @@ class CLI
         end
     end
 
-    def save_item(tag, product_type, input)
-        system("clear")
-        links = Bag.add_item(tag, product_type)
-        adjusted_input = input.to_i - 1
-        Bag.all << links[adjusted_input]
-        puts "#{@@grn}Item has been saved to your favorites!\n\n\nReturning to main menu...#{@@white}"
-        sleep(3)
-    end
-
-    def list(tag)
-        search = Api.search_endpoint(tag)
-        product_types = search.collect {|item| item["product_type"]}
-        list = product_types.uniq
-        list.sort!
+    def get_products_type_by_tag(tag)
+        results = Api.search_endpoint(tag)
+        @@available_products_by_tag = Products.new(results.collect {|item| Product.new(item)})
+        product_list = @@available_products_by_tag.get_product_type_names
+        product_list = product_list.uniq.sort!
         puts "\n#{@@grn}Enter number corresponding with product type you want to browse or type 'menu' to return to main menu.#{@@white}\n\n"
-        list.each_with_index do |list_item, i| 
+        product_list.each_with_index do |list_item, i| 
             if list_item == "lip_liner"
                 list_item = "lip liner"
             elsif list_item == "nail_polish"
@@ -154,15 +162,6 @@ class CLI
             end
             puts "#{i + 1}. #{list_item.capitalize}"
         end
-    end
-
-    def products(tag, product_type)
-        search = Api.search_endpoint(tag)
-        items = search.select {|item| item["product_type"] == "#{product_type}"}
-        star = "*" * 100
-        items.each_with_index {|item, i| puts "\n#{@@bwhite}#{star}#{@@white}\n\n\n#{i + 1}. #{@@pur}#{item["name"]} by #{item["brand"]}\n\n#{@@white}#{item["description"].wrap 100}\n\nTags: #{item["tag_list"].join(", ")}\n\nLink: #{@@ublue}#{item["product_link"]}#{@@white}\n\n\n"}  
-        puts "#{@@grn}Enter number corresponding to item you wish to add to your bag or type 'menu' to return to main menu.#{@@white}"
-        items
     end
 
     def goodbye
