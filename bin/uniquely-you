@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 
-require './lib/uniquely_you'
+require_relative '../lib/uniquely_you'
+
 
 CLI.new.call

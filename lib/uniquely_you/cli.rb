@@ -115,7 +115,7 @@ class CLI
     end
 
     def get_products(type)
-        product_list = @@available_products_by_tag.get_products_by_type(type)
+        product_list = Product.get_products_by_type(@@available_products_by_tag, type)
         star = "*" * 100
         product_list.each_with_index {|item, i| puts "\n#{@@bwhite}#{star}#{@@white}\n\n\n#{i + 1}. #{@@pur}#{item.name} by #{item.brand}\n\n#{@@white}#{item.description.wrap 100}\n\nTags: #{item.tags.join(", ")}\n\nLink: #{@@ublue}#{item.link}#{@@white}\n\n\n"}
         puts "#{@@grn}Enter number corresponding to item you wish to add to your bag or type 'menu' to return to main menu.#{@@white}"
@@ -124,7 +124,7 @@ class CLI
 
     def save_item(input)
         system("clear")
-        links = @@available_products_by_tag.get_product(input.to_i - 1)
+        links = @@available_products_by_tag[input.to_i - 1].link
         Bag.all << links
         puts "#{@@grn}Item has been saved to your favorites!\n\n\nReturning to main menu...#{@@white}"
         sleep(3)  
@@ -150,8 +150,8 @@ class CLI
 
     def get_products_type_by_tag(tag)
         results = Api.search_endpoint(tag)
-        @@available_products_by_tag = Products.new(results.collect {|item| Product.new(item)})
-        product_list = @@available_products_by_tag.get_product_type_names
+        @@available_products_by_tag = results.collect {|item| Product.new(item)}
+        product_list = Product.get_product_type_names(@@available_products_by_tag)
         product_list = product_list.uniq.sort!
         puts "\n#{@@grn}Enter number corresponding with product type you want to browse or type 'menu' to return to main menu.#{@@white}\n\n"
         product_list.each_with_index do |list_item, i| 
