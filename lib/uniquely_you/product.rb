@@ -1,4 +1,3 @@
-require 'pry'
 class Product
     
     attr_accessor :name, :brand, :type, :description, :link, :tags

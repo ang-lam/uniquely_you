@@ -104,7 +104,6 @@ class CLI
         int_input = Integer(input) rescue false
         system("clear")
         if int_input && input.to_i <= product_list.count && input.to_i > 0
-            # save_item(tag, type, input)
             save_item(input)
             call
         elsif input == "menu"
@@ -116,10 +115,11 @@ class CLI
 
     def get_products(type)
         product_list = Product.get_products_by_type(@@available_products_by_tag, type)
+        sorted_product_list = product_list.sort_by {|item| item.name}
         star = "*" * 100
-        product_list.each_with_index {|item, i| puts "\n#{@@bwhite}#{star}#{@@white}\n\n\n#{i + 1}. #{@@pur}#{item.name} by #{item.brand}\n\n#{@@white}#{item.description.wrap 100}\n\nTags: #{item.tags.join(", ")}\n\nLink: #{@@ublue}#{item.link}#{@@white}\n\n\n"}
+        sorted_product_list.each_with_index {|item, i| puts "\n#{@@bwhite}#{star}#{@@white}\n\n\n#{i + 1}. #{@@pur}#{item.name} by #{item.brand}\n\n#{@@white}#{item.description.wrap 100}\n\nTags: #{item.tags.join(", ")}\n\nLink: #{@@ublue}#{item.link}#{@@white}\n\n\n"}
         puts "#{@@grn}Enter number corresponding to item you wish to add to your bag or type 'menu' to return to main menu.#{@@white}"
-        product_list
+        sorted_product_list
     end
 
     def save_item(input)
